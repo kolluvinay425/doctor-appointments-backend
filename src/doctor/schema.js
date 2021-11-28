@@ -25,7 +25,7 @@ const doctorSchema = new Schema({
   },
   hospital: [
     {
-      type: mongoose.Schema.Types.objectId,
+      type: mongoose.Schema.Types.ObjectId,
       ref: "hospital",
       default: [],
     },

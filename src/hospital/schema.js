@@ -19,7 +19,7 @@ const hospitalSchema = new Schema({
 
   doctors: [
     {
-      type: Schema.Types.objectId,
+      type: Schema.Types.ObjectId,
       ref: "doctor",
       default: [],
     },

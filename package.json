@@ -22,10 +22,15 @@
   "homepage": "https://github.com/kolluvinay425/doctor-appointments-backend#readme",
   "dependencies": {
     "bcrypt": "^5.0.1",
+    "cloudinary": "^1.27.1",
     "cors": "^2.8.5",
     "express": "^4.17.1",
     "express-list-endpoints": "^6.0.0",
-    "http-errors": "^1.8.1"
+    "http-errors": "^1.8.1",
+    "jsonwebtoken": "^8.5.1",
+    "mongoose": "^6.0.13",
+    "multer": "^1.4.3",
+    "multer-storage-cloudinary": "^4.0.0"
   },
   "devDependencies": {
     "dotenv": "^10.0.0",

@@ -24,10 +24,20 @@ const userSchema = new Schema({
 
   password: {
     type: String,
+    required: function () {
+      return !Boolean(this.googleId);
+    },
   },
-  appointments: [
-    { type: Schema.Types.objectId, ref: "appointment", default: [] },
-  ],
+  googleId: {
+    type: String,
+    required: function () {
+      return !Boolean(this.password);
+    },
+  },
+  refreshToken: {
+    type: String,
+  },
+  appointments: [{ type: Schema.Types.ObjectId, ref: "appointment" }],
 });
 userSchema.pre("save", async function (next) {
   const newUser = this;
