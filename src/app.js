@@ -5,6 +5,7 @@ import {
   forbiddenHandler,
   catchAllHandler,
   unauthorizedHandler,
+  notFoundHandler,
 } from "./errorHandlers.js";
 import userRouter from "./user/index.js";
 import doctorRouter from "./doctor/index.js";
@@ -14,13 +15,26 @@ import mongoose from "mongoose";
 
 const port = 3001 || process.env.PORT;
 const server = express();
+const whiteList = [process.env.FRONT_END_URL, "http://localhost:3000"];
+const corsOptions = {
+  origin: (origin, callback) => {
+    if (whiteList.some((allowedUrl) => allowedUrl === origin)) {
+      callback(null, true);
+    } else {
+      const error = new Error("Not allowed by cors!");
+      error.status = 403;
+      callback(error);
+    }
+  },
+};
+server.use(cors(corsOptions));
 server.use(express.json());
-server.use(cors());
 
 //Error errorHandlers
 server.use(forbiddenHandler);
 server.use(unauthorizedHandler);
 server.use(catchAllHandler);
+server.use(notFoundHandler);
 
 //Routes
 server.use("/user", userRouter);

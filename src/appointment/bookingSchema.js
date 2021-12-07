@@ -2,9 +2,9 @@ import mongoose from "mongoose";
 
 const { model, Schema } = mongoose;
 
-const appointmentSchema = new Schema(
+const bookingSchema = new Schema(
   {
-    date: {
+    appointmentDate: {
       type: Date,
       required: true,
     },
@@ -16,18 +16,18 @@ const appointmentSchema = new Schema(
       type: String,
       required: true,
     },
-    doctor: {
+    doctorId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "doctor",
       default: {},
     },
-    status: {
-      type: String,
-      enum: ["Pending", "Accepted"],
-      default: "Pending",
+    userId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "user",
+      default: {},
     },
   },
   { timestamps: true }
 );
 
-export default model("appointment", appointmentSchema);
+export default model("booking", bookingSchema);

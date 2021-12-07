@@ -21,6 +21,7 @@
   },
   "homepage": "https://github.com/kolluvinay425/doctor-appointments-backend#readme",
   "dependencies": {
+    "@sendgrid/mail": "^7.6.0",
     "bcrypt": "^5.0.1",
     "cloudinary": "^1.27.1",
     "cors": "^2.8.5",
@@ -30,7 +31,8 @@
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^6.0.13",
     "multer": "^1.4.3",
-    "multer-storage-cloudinary": "^4.0.0"
+    "multer-storage-cloudinary": "^4.0.0",
+    "pdfmake": "^0.2.4"
   },
   "devDependencies": {
     "dotenv": "^10.0.0",

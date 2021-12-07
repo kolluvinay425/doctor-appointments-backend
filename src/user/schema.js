@@ -2,43 +2,46 @@ import mongoose from "mongoose";
 import bcrypt from "bcrypt";
 const { model, Schema } = mongoose;
 
-const userSchema = new Schema({
-  firstName: {
-    type: String,
-    required: true,
-  },
-  lastName: {
-    type: String,
-    required: true,
-  },
-  email: {
-    type: String,
-    required: true,
-  },
-  image: {
-    type: String,
-    default:
-      "https://cdn.pixabay.com/photo/2016/08/08/09/17/avatar-1577909_960_720.png",
-  },
-  role: { type: String, default: "User", enum: ["User", "Doctor", "Admin"] },
+const userSchema = new Schema(
+  {
+    firstName: {
+      type: String,
+      required: true,
+    },
+    lastName: {
+      type: String,
+      required: true,
+    },
+    email: {
+      type: String,
+      required: true,
+    },
+    image: {
+      type: String,
+      default:
+        "https://cdn.pixabay.com/photo/2016/08/08/09/17/avatar-1577909_960_720.png",
+    },
+    role: { type: String, default: "User", enum: ["User", "Admin"] },
 
-  password: {
-    type: String,
-    required: function () {
-      return !Boolean(this.googleId);
+    password: {
+      type: String,
+      required: function () {
+        return !Boolean(this.googleId);
+      },
     },
-  },
-  googleId: {
-    type: String,
-    required: function () {
-      return !Boolean(this.password);
+    googleId: {
+      type: String,
+      required: function () {
+        return !Boolean(this.password);
+      },
     },
+    refreshToken: {
+      type: String,
+    },
+    bookings: [{ type: Schema.Types.ObjectId, ref: "booking" }],
   },
-  refreshToken: {
-    type: String,
-  },
-  appointments: [{ type: Schema.Types.ObjectId, ref: "appointment" }],
-});
+  { timestamps: true }
+);
 userSchema.pre("save", async function (next) {
   const newUser = this;
   const plainPw = newUser.password;
