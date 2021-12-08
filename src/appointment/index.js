@@ -8,6 +8,7 @@ import { sendMail } from "../utils/mail.js";
 import { doctorOnlyMiddleware } from "../user/authentication/admin.js";
 import { generateAppointmentPDF } from "../utils/pdf.js";
 import JWtAuthenticateMiddle from "../user/authentication/jwt.js";
+
 const appointmentRouter = express.Router();
 
 appointmentRouter.post(
@@ -24,22 +25,21 @@ appointmentRouter.post(
           doctorId: appointment.doctor.toString(),
           userId: req.user._id.toString(),
         };
-        // console.log(booking);
         const newBooking = new bookingModel(booking);
         const newB = await newBooking.save();
-        // console.log("new booking", newBooking);
+
         if (newB) {
           const updateUser = await userModel.findByIdAndUpdate(req.user._id, {
-            $push: { booking: newB._id },
+            $push: { bookings: newB._id },
           });
-          //console.log("updated user", user);
           const updateDoc = await doctorModel.findByIdAndUpdate(
             appointment.doctor.toString(),
             {
-              $push: { booking: newB._id },
+              $push: { bookings: newB._id },
             }
           );
-          //console.log("updated doctor", updateDoc);
+          const pdfDoc = await generateAppointmentPDF(newB);
+          const email = await sendMail(newB._id, req.user.email);
           const deleteAppointment = await appointmentModel.findByIdAndDelete(
             req.params.appId
           );
@@ -68,26 +68,13 @@ appointmentRouter.get("/", async (req, res, next) => {
     next(error);
   }
 });
-import path, { dirname, extname } from "path";
-import fs from "fs";
-
-import { fileURLToPath } from "url";
-const __filename = fileURLToPath(import.meta.url);
-
-const __dirname = dirname(__filename);
-
-const publicDirectory = path.join(__dirname, "../public");
-// console.log(publicDirectory);
 appointmentRouter.get("/mail/:appId", async (req, res, next) => {
   try {
     const appointment = await appointmentModel.findById(req.params.appId); //geting the appointment which need to book
     if (appointment) {
       const pdfDoc = await generateAppointmentPDF(appointment);
-      // res.setHeader("Content-Type", "application/pdf");
-      // pdfDoc.pipe(fs.createWriteStream("booking.pdf"));
-      // pdfDoc.end();
       await sendMail();
-      res.send("ok");
+      res.send("success");
     }
   } catch (error) {
     next(error);

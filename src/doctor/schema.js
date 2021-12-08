@@ -44,7 +44,7 @@ const doctorSchema = new Schema(
         default: [],
       },
     ],
-    booking: [
+    bookings: [
       {
         type: mongoose.Schema.Types.ObjectId,
         ref: "booking",

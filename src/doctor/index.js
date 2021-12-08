@@ -27,7 +27,7 @@ doctorRouter.get("/", async (req, res, next) => {
           { clinicLocation: query.search },
         ],
       })
-      .populate()
+      .populate("booking")
       .limit(4);
     res.send(doctors);
   } catch (error) {
