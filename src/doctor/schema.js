@@ -28,7 +28,6 @@ const doctorSchema = new Schema(
     },
     clinicLocation: {
       type: String,
-      required: true,
     },
     role: { type: String, default: "Doctor", enum: ["Doctor", "Admin"] },
     password: {
@@ -37,13 +36,11 @@ const doctorSchema = new Schema(
       min: 5,
       max: 25,
     },
-    hospitals: [
-      {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "hospital",
-        default: [],
-      },
-    ],
+    hospital: {
+      type: String,
+      required: true,
+    },
+
     bookings: [
       {
         type: mongoose.Schema.Types.ObjectId,

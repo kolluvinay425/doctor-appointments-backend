@@ -4,7 +4,11 @@ const { model, Schema } = mongoose;
 
 const hospitalSchema = new Schema(
   {
-    Name: {
+    name: {
+      type: String,
+      required: true,
+    },
+    city: {
       type: String,
       required: true,
     },

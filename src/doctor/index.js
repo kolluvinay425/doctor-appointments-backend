@@ -16,6 +16,19 @@ doctorRouter.get("/:docId", async (req, res, next) => {
     next(error);
   }
 });
+doctorRouter.get("/search/dm", async (req, res, next) => {
+  console.log("here here");
+  try {
+    const query = req.query;
+    const doctors = await doctorModel
+      .find({ hospital: query.hospital })
+      .populate("bookings")
+      .limit(4);
+    res.send(doctors);
+  } catch (error) {
+    next(error);
+  }
+});
 doctorRouter.get("/", async (req, res, next) => {
   console.log("here here");
   try {
@@ -27,9 +40,27 @@ doctorRouter.get("/", async (req, res, next) => {
           { clinicLocation: query.search },
         ],
       })
-      .populate("booking")
+      .populate("bookings")
       .limit(4);
     res.send(doctors);
+  } catch (error) {
+    next(error);
+  }
+});
+
+doctorRouter.post("/login", async (req, res, next) => {
+  try {
+    const { email, password } = req.body;
+    const user = await doctorModel.checkCredentials(email, password);
+    if (user) {
+      console.log(user);
+      const { accessToken, refreshToken } = await JWtAuthenticate(user);
+      res.send({ accessToken, refreshToken });
+    } else {
+      next(
+        createHttpError(401, "credentials are not ok check again correctly")
+      );
+    }
   } catch (error) {
     next(error);
   }
@@ -59,23 +90,7 @@ doctorRouter.post(
     }
   }
 );
-doctorRouter.post("/login", async (req, res, next) => {
-  try {
-    const { email, password } = req.body;
-    const user = await doctorModel.checkCredentials(email, password);
-    if (user) {
-      console.log(user);
-      const { accessToken, refreshToken } = await JWtAuthenticate(user);
-      res.send({ accessToken, refreshToken });
-    } else {
-      next(
-        createHttpError(401, "credentials are not ok check again correctly")
-      );
-    }
-  } catch (error) {
-    next(error);
-  }
-});
+
 doctorRouter.post(
   "/register",
   parseFile.single("image"),
@@ -85,24 +100,24 @@ doctorRouter.post(
         firstName: req.body.firstName,
         lastName: req.body.lastName,
         email: req.body.email,
+        hospital: req.body.hospital,
+        role: "Doctor",
         //image: req.file.path,
+        specialization: req.body.specialization,
+        clinicLocation: req.body.clinicLocation,
         password: req.body.password,
       };
-      const register = new doctorModel(req.body);
-      const { firstName, lastName, email, image } = await register.save();
-      res.send({ firstName, lastName, email, image });
+      const register = new doctorModel(newUser);
+      //console.log(newUser);
+      const data = await register.save();
+      res.send(data);
     } catch (error) {
       console.log(error);
       next(error);
     }
   }
 );
-doctorRouter.get("/", async (req, res, next) => {
-  try {
-  } catch (error) {
-    next(error);
-  }
-});
+
 doctorRouter.put("/", async (req, res, next) => {
   try {
   } catch (error) {

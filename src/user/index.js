@@ -43,9 +43,9 @@ userRouter.post(
         //image: req.file.path,
         password: req.body.password,
       };
-      const register = new userModel(newUser);
-      const { firstName, lastName, email, image } = await register.save();
-      res.send({ firstName, lastName, email, image });
+      const register = new userModel(req.body);
+      const { firstName, lastName, email, image, role } = await register.save();
+      res.send({ firstName, lastName, email, image, role });
     } catch (error) {
       console.log(error);
       next(error);
