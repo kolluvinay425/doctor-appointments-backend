@@ -22,7 +22,7 @@ hospitalRouter.get("/", async (req, res, next) => {
   console.log("here here");
   try {
     const query = req.query;
-    const doctors = await hospitalModel
+    const hospitals = await hospitalModel
       .find({
         $or: [
           { name: query.search },
@@ -30,16 +30,15 @@ hospitalRouter.get("/", async (req, res, next) => {
           { location: query.search },
         ],
       })
-      .populate("doctors")
-      .limit(4);
-    res.send(doctors);
+      .populate("doctors");
+    res.send(hospitals);
   } catch (error) {
     next(error);
   }
 });
-hospitalRouter.get("/doctors", async (req, res, next) => {
+hospitalRouter.get("/all", async (req, res, next) => {
   try {
-    const doctors = await hospitalModel.find().populate("doctors").limit(4);
+    const doctors = await hospitalModel.find();
     res.send(doctors);
   } catch (error) {
     next(error);
@@ -57,4 +56,5 @@ hospitalRouter.put("/", async (req, res, next) => {
     next(error);
   }
 });
+
 export default hospitalRouter;

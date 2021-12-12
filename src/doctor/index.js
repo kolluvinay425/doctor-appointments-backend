@@ -1,47 +1,62 @@
 import express from "express";
 import doctorModel from "./schema.js";
-import appartmentModel from "../appointment/schema.js";
+import appointmentModel from "../appointment/schema.js";
 import DocJWtAuthenticateMiddle from "./jwt.js";
 import { doctorOnlyMiddleware } from "../user/authentication/admin.js";
 import { JWtAuthenticate } from "../user/authentication/oauth.js";
 import { parseFile } from "../utils/cloudinary.js";
+import createHttpError from "http-errors";
 const doctorRouter = express.Router();
 doctorRouter.get("/:docId", async (req, res, next) => {
   try {
-    const doctor = await doctorModel
-      .findById(req.params.docId)
-      .populate("appointments");
+    const doctor = await doctorModel.findById(req.params.docId);
     res.send(doctor);
   } catch (error) {
     next(error);
   }
 });
-doctorRouter.get("/search/dm", async (req, res, next) => {
-  console.log("here here");
+doctorRouter.get("/", async (req, res, next) => {
   try {
-    const query = req.query;
-    const doctors = await doctorModel
-      .find({ hospital: query.hospital })
-      .populate("bookings")
-      .limit(4);
+    const doctors = await doctorModel.find();
     res.send(doctors);
   } catch (error) {
     next(error);
   }
 });
-doctorRouter.get("/", async (req, res, next) => {
+doctorRouter.get("/", DocJWtAuthenticateMiddle, async (req, res, next) => {
+  try {
+    console.log(req.doctor);
+    const user = await doctorModel
+      .findById(req.doctor._id.toString())
+      .populate("bookings");
+    if (user) res.send(user);
+  } catch (error) {
+    next(error);
+  }
+});
+doctorRouter.get("/search/dm", async (req, res, next) => {
+  //search doctors based on hospital name
   console.log("here here");
   try {
     const query = req.query;
-    const doctors = await doctorModel
-      .find({
-        $or: [
-          { specialization: query.search },
-          { clinicLocation: query.search },
-        ],
-      })
-      .populate("bookings")
-      .limit(4);
+    const doctors = await doctorModel.find({ hospital: query.hospital });
+    res.send(doctors);
+  } catch (error) {
+    next(error);
+  }
+});
+doctorRouter.get("/search/find", async (req, res, next) => {
+  //search dctors by specialization or clinicLocation or hospital
+  console.log("here here");
+  try {
+    const query = req.query;
+    const doctors = await doctorModel.find({
+      $or: [
+        { specialization: query.search },
+        { clinicLocation: query.search },
+        { hospital: query.search },
+      ],
+    });
     res.send(doctors);
   } catch (error) {
     next(error);
@@ -71,7 +86,7 @@ doctorRouter.post(
   doctorOnlyMiddleware,
   async (req, res, next) => {
     try {
-      const docId = req.doctor._id.toString();
+      const docId = req.doctor._id;
       const newAppointment = {
         date: req.body.date,
         startTime: req.body.startTime,
@@ -79,7 +94,7 @@ doctorRouter.post(
         doctor: docId,
       };
       console.log("objectt", newAppointment);
-      const appointment = new appartmentModel(newAppointment);
+      const appointment = new appointmentModel(newAppointment);
       const newApp = await appointment.save();
       // const updateDoc = await doctorModel.findByIdAndUpdate(docId, {
       //   $push: { appointments: newApp._id },

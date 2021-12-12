@@ -60,7 +60,7 @@ appointmentRouter.get("/", async (req, res, next) => {
     const query = req.query;
     const doctorAppointments = await appointmentModel
       .find({
-        $and: [{ doctor: query.doc }, { date: query.date }],
+        $and: [{ doctor: query.docId }, { date: query.date }],
       })
       .limit(4);
     res.send(doctorAppointments);
