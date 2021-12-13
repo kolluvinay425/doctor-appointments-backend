@@ -1,13 +1,17 @@
 import sgMail from "@sendgrid/mail";
 import fs from "fs";
+import path from "path";
 sgMail.setApiKey(process.env.MY_SENDGRED_API_KEY);
+const publicFolderPath = path.join(process.cwd(), "public");
 
 export const sendMail = async (id, recepient) => {
   console.log("im here");
   console.log(recepient);
   console.log("kolluvinay425@gmail.com");
-
-  fs.readFile(`${id}.pdf`, (err, data) => {
+  const newFileName = `${id}.pdf`;
+  const filePath = path.join(publicFolderPath, newFileName);
+  console.log("filePath", filePath);
+  fs.readFile(filePath, (err, data) => {
     if (err) {
       console.log("err", err);
     }

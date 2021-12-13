@@ -15,6 +15,7 @@ appointmentRouter.post(
   "/:appId",
   JWtAuthenticateMiddle,
   async (req, res, next) => {
+    console.log("request for appointment booking", req.user);
     try {
       const appointment = await appointmentModel.findById(req.params.appId); //geting the appointment which need to book
       if (appointment) {
