@@ -32,7 +32,8 @@
     "mongoose": "^6.0.13",
     "multer": "^1.4.3",
     "multer-storage-cloudinary": "^4.0.0",
-    "pdfmake": "^0.2.4"
+    "pdfmake": "^0.2.4",
+    "query-to-mongo": "^0.10.1"
   },
   "devDependencies": {
     "dotenv": "^10.0.0",

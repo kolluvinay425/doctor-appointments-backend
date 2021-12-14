@@ -49,14 +49,20 @@ doctorRouter.get("/search/find", async (req, res, next) => {
   //search dctors by specialization or clinicLocation or hospital
   console.log("here here");
   try {
-    const query = req.query;
+    const query = req.query.search;
+    const regex = new RegExp(escapeRegex(query), "gi");
     const doctors = await doctorModel.find({
       $or: [
-        { specialization: query.search },
-        { clinicLocation: query.search },
-        { hospital: query.search },
+        { specialization: regex },
+        { clinicLocation: regex },
+        { hospital: regex },
+        { firstName: regex },
+        { lastName: regex },
       ],
     });
+    if (query === "") {
+      res.send([]);
+    }
     res.send(doctors);
   } catch (error) {
     next(error);
@@ -140,3 +146,6 @@ doctorRouter.put("/", async (req, res, next) => {
   }
 });
 export default doctorRouter;
+export const escapeRegex = (query) => {
+  return query.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, "\\$&");
+};

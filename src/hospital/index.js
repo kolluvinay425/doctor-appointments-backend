@@ -2,6 +2,7 @@ import express from "express";
 import hospitalModel from "./schema.js";
 import { adminOnlyMiddleware } from "../user/authentication/admin.js";
 import JWtAuthenticateMiddle from "../user/authentication/jwt.js";
+import { escapeRegex } from "../doctor/index.js";
 const hospitalRouter = express.Router();
 hospitalRouter.post(
   "/",
@@ -21,16 +22,17 @@ hospitalRouter.post(
 hospitalRouter.get("/", async (req, res, next) => {
   console.log("here here");
   try {
-    const query = req.query;
+    const query = req.query.search;
+    const regex = new RegExp(escapeRegex(query), "gi");
+
     const hospitals = await hospitalModel
       .find({
-        $or: [
-          { name: query.search },
-          { city: query.search },
-          { location: query.search },
-        ],
+        $or: [{ name: regex }, { city: regex }, { location: regex }],
       })
       .populate("doctors");
+    if (query === "") {
+      res.send([]);
+    }
     res.send(hospitals);
   } catch (error) {
     next(error);

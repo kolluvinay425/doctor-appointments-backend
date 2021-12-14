@@ -18,7 +18,7 @@ export const generateAppointmentPDF = async (booking) => {
   const docDefinition = {
     content: [
       {
-        text: `your doctor appointment is conformed on ${booking.appointmentDate}`,
+        text: `your doctor appointment is confirmed on ${booking.appointmentDate}`,
         fontSize: 20,
         bold: true,
         margin: [0, 0, 0, 40],
