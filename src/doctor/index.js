@@ -23,17 +23,21 @@ doctorRouter.get("/", async (req, res, next) => {
     next(error);
   }
 });
-doctorRouter.get("/", DocJWtAuthenticateMiddle, async (req, res, next) => {
-  try {
-    console.log(req.doctor);
-    const user = await doctorModel
-      .findById(req.doctor._id.toString())
-      .populate("bookings");
-    if (user) res.send(user);
-  } catch (error) {
-    next(error);
+doctorRouter.get(
+  "/profile/d",
+  DocJWtAuthenticateMiddle,
+  async (req, res, next) => {
+    try {
+      console.log(req.doctor);
+      const user = await doctorModel
+        .findById(req.doctor._id.toString())
+        .populate("bookings");
+      if (user) res.send(user);
+    } catch (error) {
+      next(error);
+    }
   }
-});
+);
 doctorRouter.get("/search/dm", async (req, res, next) => {
   //search doctors based on hospital name
   console.log("here here");

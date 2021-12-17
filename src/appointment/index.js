@@ -5,9 +5,9 @@ import userModel from "../user/schema.js";
 import bookingModel from "./bookingSchema.js";
 import doctorModel from "../doctor/schema.js";
 import { sendMail } from "../utils/mail.js";
-import { doctorOnlyMiddleware } from "../user/authentication/admin.js";
 import { generateAppointmentPDF } from "../utils/pdf.js";
 import JWtAuthenticateMiddle from "../user/authentication/jwt.js";
+import DocJWtAuthenticateMiddle from "../doctor/jwt.js";
 
 const appointmentRouter = express.Router();
 
@@ -69,18 +69,23 @@ appointmentRouter.get("/", async (req, res, next) => {
     next(error);
   }
 });
-appointmentRouter.get("/mail/:appId", async (req, res, next) => {
-  try {
-    const appointment = await appointmentModel.findById(req.params.appId); //geting the appointment which need to book
-    if (appointment) {
-      const pdfDoc = await generateAppointmentPDF(appointment);
-      await sendMail();
-      res.send("success");
+appointmentRouter.get(
+  "/doctor",
+  DocJWtAuthenticateMiddle,
+  async (req, res, next) => {
+    console.log("here here");
+    try {
+      const query = req.query;
+      const doctorAppointments = await appointmentModel.find({
+        $and: [{ doctor: query.docId }, { date: query.date }],
+      });
+      res.send(doctorAppointments);
+    } catch (error) {
+      next(error);
     }
-  } catch (error) {
-    next(error);
   }
-});
+);
+
 appointmentRouter.get("/:appId", async (req, res, next) => {
   try {
     const { _id, date, startTime, endTime, doctor } = await appointmentModel
@@ -91,12 +96,40 @@ appointmentRouter.get("/:appId", async (req, res, next) => {
     next(error);
   }
 });
-
-appointmentRouter.put("/", async (req, res, next) => {
-  try {
-  } catch (error) {
-    next(error);
+appointmentRouter.delete(
+  "/:appId",
+  DocJWtAuthenticateMiddle,
+  async (req, res, next) => {
+    try {
+      const deleteAppointment = await appointmentModel.findByIdAndDelete(
+        req.params.appId
+      );
+      if (deleteAppointment)
+        res.send(`appointment with id ${req.params.appId} deleted`);
+      else res.send("id not found");
+    } catch (error) {
+      next(error);
+    }
   }
-});
+);
+
+appointmentRouter.put(
+  "/:appId",
+  DocJWtAuthenticateMiddle,
+  async (req, res, next) => {
+    try {
+      const updatedAppointment = await appointmentModel.findByIdAndUpdate(
+        req.params.appId,
+        req.body,
+        {
+          new: true,
+        }
+      );
+      res.send(updatedAppointment);
+    } catch (error) {
+      next(error);
+    }
+  }
+);
 
 export default appointmentRouter;
