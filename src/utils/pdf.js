@@ -1,11 +1,11 @@
-import PdfPrinter from "pdfmake"
-import fs from "fs"
-import { join } from "path"
-import { promisify } from "util"
-import { pipeline } from "stream"
+import PdfPrinter from "pdfmake";
+import fs from "fs";
+import { join } from "path";
+import { promisify } from "util";
+import { pipeline } from "stream";
 
-const publicFolderPath = join(process.cwd(), "public")
-console.log(publicFolderPath)
+const publicFolderPath = join(process.cwd(), "public");
+console.log(publicFolderPath);
 const fonts = {
   Roboto: {
     normal: "Helvetica",
@@ -13,12 +13,12 @@ const fonts = {
     italics: "Helvetica-Oblique",
     bolditalics: "Helvetica-BoldOblique",
   },
-}
-const printer = new PdfPrinter(fonts)
+};
+const printer = new PdfPrinter(fonts);
 
-export const generateAppointmentPDF = async booking => {
-  const asyncPipeline = promisify(pipeline)
-  console.log("aappp", booking)
+export const generateAppointmentPDF = async (booking) => {
+  const asyncPipeline = promisify(pipeline);
+  console.log("aappp", booking);
   const docDefinition = {
     content: [
       {
@@ -39,11 +39,15 @@ export const generateAppointmentPDF = async booking => {
         lineHeight: 4,
       },
     ],
-  }
-  const newFileName = `${booking._id}.pdf`
-  const filePath = join(publicFolderPath, newFileName) // users/myname/projectname/public/m5-d4-debrief.mp4
+  };
+  const newFileName = `${booking._id}.pdf`;
+  const filePath = join(publicFolderPath, newFileName);
 
-  const pdfDoc = printer.createPdfKitDocument(docDefinition)
-  pdfDoc.end()
-  await asyncPipeline(pdfDoc, fs.createWriteStream(filePath))
-}
+  const pdfDoc = printer.createPdfKitDocument(docDefinition);
+  pdfDoc.end();
+  await asyncPipeline(pdfDoc, fs.createWriteStream(filePath));
+};
+// const pdfDoc = printer.createPdfKitDocument(docDefinition);
+//   pdfDoc.pipe(fs.createWriteStream(filePath));
+//   pdfDoc.end();
+//   return pdfDoc;
