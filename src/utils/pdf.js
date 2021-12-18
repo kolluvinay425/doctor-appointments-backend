@@ -16,27 +16,184 @@ const fonts = {
 };
 const printer = new PdfPrinter(fonts);
 
-export const generateAppointmentPDF = async (booking) => {
+export const generateAppointmentPDF = async (
+  booking,
+  doctor,
+  user,
+  hospital
+) => {
   const asyncPipeline = promisify(pipeline);
-  console.log("aappp", booking);
+  console.log("hospital", hospital[0].location);
   const docDefinition = {
     content: [
       {
-        text: `your doctor appointment is confirmed on ${booking.appointmentDate}`,
-        fontSize: 20,
+        alignment: "center",
+        text: "DOCTOR APPOINTMENT CONFORMATION",
+        style: "header",
+        fontSize: 17,
         bold: true,
-        margin: [0, 0, 0, 40],
+        margin: [0, 10],
       },
       {
-        text: `your appointment starting time is ${booking.startTime}`,
-        bold: true,
-        lineHeight: 4,
+        margin: [0, 0, 0, 10],
+        layout: {
+          fillColor: function (rowIndex, node, columnIndex) {
+            return rowIndex % 2 === 0 ? "#ebebeb" : "#f5f5f5";
+          },
+        },
+        table: {
+          widths: ["100%"],
+          heights: [20, 10],
+          body: [
+            [
+              {
+                text: `Date: ${"21/12/2021"}`,
+                fontSize: 9,
+                bold: true,
+              },
+            ],
+            [
+              {
+                text: `User Name: ${user.firstName} ${user.lastName}`,
+                fontSize: 9,
+                bold: true,
+              },
+            ],
+          ],
+        },
       },
       {
-        text: `your appointment end time is ${booking.endTime}`,
-        bold: true,
+        style: "tableExample",
+        layout: {
+          fillColor: function (rowIndex, node, columnIndex) {
+            return rowIndex === 0 ? "#c2dec2" : null;
+          },
+        },
+        table: {
+          widths: ["30%", "10%", "25%", "35%"],
+          heights: [10, 10, 10, 10, 30, 10, 25],
+          headerRows: 1,
+          body: [
+            [
+              {
+                text: `Appointment Date`,
+                fontSize: 9,
+                bold: true,
+              },
+              {
+                text: `${booking.appointmentDate}`,
+                colSpan: 3,
+                fontSize: 9,
+                bold: true,
+              },
+              {},
+              {},
+            ],
+            [
+              {
+                text: `Hospital Name`,
+                fontSize: 9,
+                bold: true,
+              },
+              {
+                text: `${doctor.hospital}`,
+                colSpan: 3,
+                fontSize: 9,
+                bold: true,
+              },
+              {},
+              {},
+            ],
+            [
+              {
+                text: `Hospital Location`,
+                fontSize: 9,
+                bold: true,
+              },
+              {
+                text: `${hospital[0].location}`,
+                colSpan: 3,
+                fontSize: 9,
+                bold: true,
+              },
+              {},
+              {},
+            ],
+            [
+              {
+                text: `Doctor Name`,
+                fontSize: 9,
+                bold: true,
+              },
+              {
+                text: `${doctor.firstName} ${doctor.lastName} `,
+                colSpan: 3,
+                fontSize: 9,
+                bold: true,
+              },
+              {},
+              {},
+            ],
+            [
+              {
+                text: ["Booking Time "],
+                fontSize: 9,
+                bold: true,
+              },
+              {
+                text: [`${booking.startTime} - ${booking.endTime}`],
+                colSpan: 3,
+                fontSize: 9,
+                bold: true,
+              },
+              {},
+              {},
+            ],
 
-        lineHeight: 4,
+            [
+              {
+                text: `Hospital Emergency No: +39 56981234`,
+                border: [true, true, false, false],
+                colSpan: 2,
+                fontSize: 9,
+                bold: true,
+              },
+              {},
+              {
+                text: `Hospital Email: ${hospital[0].name}@${doctor.firstName}${doctor.lastName}`,
+                border: [false, true, true, false],
+                colSpan: 2,
+                fontSize: 9,
+                bold: true,
+              },
+              {},
+            ],
+            [
+              {
+                text: "Looking forward to see you.",
+                border: [true, false, true, true],
+                colSpan: 4,
+                fontSize: 9,
+                bold: true,
+              },
+              {},
+              {},
+              {},
+            ],
+            [
+              {
+                text: "developed by Vinay Monster",
+                border: [true, false, true, true],
+                colSpan: 4,
+                fontSize: 10,
+                bold: true,
+              },
+              {},
+              {},
+              {},
+            ],
+          ],
+        },
       },
     ],
   };

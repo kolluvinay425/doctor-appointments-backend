@@ -127,7 +127,7 @@ doctorRouter.post(
         email: req.body.email,
         hospital: req.body.hospital,
         role: "Doctor",
-        //image: req.file.path,
+        image: req.body.image,
         specialization: req.body.specialization,
         clinicLocation: req.body.clinicLocation,
         password: req.body.password,

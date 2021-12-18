@@ -2,6 +2,7 @@ import express from "express";
 import createHttpError from "http-errors";
 import appointmentModel from "./schema.js";
 import userModel from "../user/schema.js";
+import hospitalModel from "../hospital/schema.js";
 import bookingModel from "./bookingSchema.js";
 import doctorModel from "../doctor/schema.js";
 import { sendMail } from "../utils/mail.js";
@@ -39,7 +40,16 @@ appointmentRouter.post(
               $push: { bookings: newB._id },
             }
           );
-          const pdfDoc = await generateAppointmentPDF(newB);
+          const hospital = await hospitalModel.find({
+            name: updateDoc.hospital,
+          });
+          //console.log(hospital);
+          const pdfDoc = await generateAppointmentPDF(
+            newB,
+            updateDoc,
+            updateUser,
+            hospital
+          );
           const email = await sendMail(newB._id, req.user.email);
           const deleteAppointment = await appointmentModel.findByIdAndDelete(
             req.params.appId
