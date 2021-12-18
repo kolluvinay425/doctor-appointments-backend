@@ -40,7 +40,7 @@ userRouter.post(
         firstName: req.body.firstName,
         lastName: req.body.lastName,
         email: req.body.email,
-        //image: req.file.path,
+        image: req.body.image,
         password: req.body.password,
       };
       const register = new userModel(req.body);
