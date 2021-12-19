@@ -20,6 +20,10 @@
     "url": "https://github.com/kolluvinay425/doctor-appointments-backend/issues"
   },
   "homepage": "https://github.com/kolluvinay425/doctor-appointments-backend#readme",
+  "engines": {
+    "node": "14.x",
+    "npm": "6.x"
+  },
   "dependencies": {
     "@sendgrid/mail": "^7.6.0",
     "bcrypt": "^5.0.1",
