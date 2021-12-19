@@ -14,7 +14,7 @@ import hospitalRouter from "./hospital/index.js";
 import appointmentRouter from "./appointment/index.js";
 import mongoose from "mongoose";
 
-const port = 3001 || process.env.PORT;
+const port = process.env.PORT || 3001;
 const server = express();
 const whiteList = [process.env.FRONT_END_URL, "http://localhost:3000"];
 const corsOptions = {
