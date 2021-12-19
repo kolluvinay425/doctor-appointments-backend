@@ -1,4 +1,5 @@
 import express from "express";
+import path from "path";
 import cors from "cors";
 import list from "express-list-endpoints";
 import {
@@ -27,6 +28,8 @@ const corsOptions = {
     }
   },
 };
+const publicFolderPath = path.join(process.cwd(), "public");
+server.use(express.static(publicFolderPath));
 server.use(cors(corsOptions));
 server.use(express.json());
 

@@ -28,7 +28,7 @@ export const generateAppointmentPDF = async (
     content: [
       {
         alignment: "center",
-        text: "DOCTOR APPOINTMENT CONFORMATION",
+        text: "STRIVE DOCTOR APPOINTMENT CONFORMATION",
         style: "header",
         fontSize: 17,
         bold: true,
