@@ -52,8 +52,16 @@ hospitalRouter.get("/:hosId", async (req, res, next) => {
     next(error);
   }
 });
-hospitalRouter.put("/", async (req, res, next) => {
+hospitalRouter.put("/:hosId", async (req, res, next) => {
   try {
+    const updateHos = await hospitalModel.findByIdAndUpdate(
+      req.params.hosId,
+      req.body,
+      { new: true }
+    );
+    if (updateHos) {
+      res.send(updateHos);
+    }
   } catch (error) {
     next(error);
   }

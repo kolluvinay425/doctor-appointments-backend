@@ -143,8 +143,16 @@ doctorRouter.post(
   }
 );
 
-doctorRouter.put("/", async (req, res, next) => {
+doctorRouter.put("/:docId", async (req, res, next) => {
   try {
+    const updateDoctor = await doctorModel.findByIdAndUpdate(
+      req.params.docId,
+      req.body,
+      { new: true }
+    );
+    if (updateDoctor) {
+      res.send(updateDoctor);
+    }
   } catch (error) {
     next(error);
   }
