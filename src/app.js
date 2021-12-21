@@ -16,7 +16,10 @@ import mongoose from "mongoose";
 
 const port = process.env.PORT || 3001;
 const server = express();
-const whiteList = [process.env.FRONT_END_URL, "http://localhost:3000"];
+const whiteList = [
+  "https://doctor-appointments-frontend.vercel.app",
+  "http://localhost:3000",
+];
 const corsOptions = {
   origin: (origin, callback) => {
     if (whiteList.some((allowedUrl) => allowedUrl === origin)) {
