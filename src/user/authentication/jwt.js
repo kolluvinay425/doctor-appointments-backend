@@ -15,7 +15,7 @@ const JWtAuthenticateMiddle = async (req, res, next) => {
       const decodedToken = await verifyJWT(token);
       //console.log(decodedToken);
       const user = await userModel.findById(decodedToken._id);
-      //console.log(user);
+      console.log(user);
       if (user) {
         req.user = user;
         next();

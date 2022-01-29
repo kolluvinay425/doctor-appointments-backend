@@ -25,12 +25,25 @@ userRouter.get("/:userId", async (req, res, next) => {
     next(error);
   }
 });
-userRouter.put("/", async (req, res, next) => {
-  try {
-  } catch (error) {
-    next(error);
+userRouter.post(
+  "/update-profile-image",
+  parseFile.single("image"),
+  JWtAuthenticateMiddle,
+  async (req, res, next) => {
+    console.log("user", req.user);
+
+    try {
+      const myObj = { image: req.file.path };
+      const user = await userModel.findByIdAndUpdate(req.user._id, myObj, {
+        new: true,
+      });
+      console.log(user);
+      res.send(user);
+    } catch (error) {
+      res.send(error);
+    }
   }
-});
+);
 userRouter.post(
   "/register",
   parseFile.single("image"),
@@ -40,10 +53,10 @@ userRouter.post(
         firstName: req.body.firstName,
         lastName: req.body.lastName,
         email: req.body.email,
-        image: req.body.image,
+        image: req.file.path,
         password: req.body.password,
       };
-      const register = new userModel(req.body);
+      const register = new userModel(newUser);
       const { firstName, lastName, email, image, role } = await register.save();
       res.send({ firstName, lastName, email, image, role });
     } catch (error) {
